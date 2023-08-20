@@ -4,7 +4,7 @@ const users = require("../schemaAndmodel/userSchema");
 
 exports.register = async (req, res) => {
   // res.send('request recieved')
-  const { fname, email, mobile, password } = req.body;
+  const { fname,address, email, mobile, password } = req.body;
   if (!fname || !email || !mobile || !password) {
     res.status(403).json("All inputs are required");
   }
@@ -16,6 +16,7 @@ exports.register = async (req, res) => {
     } else {
       const newUser = new users({
         fname,
+        address,
         email,
         mobile,
         password,
@@ -145,10 +146,26 @@ exports.profileUpdate = async (req, res) => {
 };
 
 exports.getAllUsers=async(req,res)=>{
+  const search=req.query.search
+  const queryletter={
+    address:{ $regex: search, $options: "i" }
+  }
   try {
-    const allUsers=await users.find()
+    const allUsers=await users.find(queryletter)
     res.status(200).json(allUsers)
   } catch (error) {
     res.status(401).json(error)
+  }
+}
+
+exports.deleteUser=async(req,res)=>{
+  const {id}=req.params
+
+  try {
+    const deletedUser=await users.findByIdAndDelete({_id:id})
+    res.status(200).json(deletedUser)
+  } catch (error) {
+    res.status(401).json(error)
+    
   }
 }

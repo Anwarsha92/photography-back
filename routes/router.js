@@ -28,5 +28,8 @@ router.put('/update_profile/:id',upload.single('user_profile'),userController.pr
 //get all users
 router.get('/get_all_users',userController.getAllUsers)
 
+//delete user
+router.delete('/delete_user/:id',userController.deleteUser)
+
 module.exports=router
 
